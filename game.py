@@ -165,7 +165,12 @@ while running:
                     show_retry = False
 
     elif paused:
-        screen.fill((0, 0, 0))
+        all_sprites.draw(screen)
+        s = pygame.Surface((WIDTH, HEIGHT))
+        s.fill((0,0,0))
+        s.set_alpha(180)  # this fills the entire surface
+        screen.blit(s, (0,0))
+        draw_score()
         paused_text = font.render("Paused", True, WHITE)
         paused_rect = paused_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
         screen.blit(paused_text, paused_rect)
