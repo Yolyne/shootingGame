@@ -54,7 +54,14 @@ class Player(pygame.sprite.Sprite):
                 self.last_shot_time = current_time
 
     def shoot(self):
-        bullet = Bullet(self.rect.centerx, self.rect.top)
+        if score > 50:
+            bullet = [
+                Bullet(self.rect.centerx, self.rect.top),
+                Bullet(self.rect.left, self.rect.top),
+                Bullet(self.rect.right, self.rect.top),
+            ]
+        else:
+            bullet = Bullet(self.rect.centerx, self.rect.top)
         all_sprites.add(bullet)
         bullets.add(bullet)
 
@@ -72,14 +79,16 @@ class Obstacle(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(0, WIDTH - self.rect.width)
         self.rect.y = random.randrange(-100, -40)
-        self.speedy = random.randrange(1, 8)
+        self.speedy = 1 + score*0.02
+        # self.speedy = random.randrange(1, 8)
 
     def update(self):
         self.rect.y += self.speedy
         if self.rect.top > HEIGHT + 10:
             self.rect.x = random.randrange(0, WIDTH - self.rect.width)
             self.rect.y = random.randrange(-100, -40)
-            self.speedy = random.randrange(1, 8)
+            self.speedy = 1 + score*0.02
+            # self.speedy = random.randrange(1, 8)
 
 
 # 弾のクラス
@@ -131,6 +140,7 @@ show_retry = False
 paused = False  # ゲームが一時停止中かどうかのフラグ
 while running:
     if game_over:
+        score = 0
         if not show_retry:
             screen.fill((0, 0, 0))
             game_over_text = font.render("Game Over", True, WHITE)
@@ -179,8 +189,9 @@ while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                paused = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key in (pygame.K_ESCAPE, pygame.K_SPACE):
+                    paused = False
 
     else:
         # イベント処理
