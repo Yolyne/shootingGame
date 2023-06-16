@@ -13,6 +13,7 @@ RED = (255, 0, 0)
 # 弾の発射間隔（ミリ秒）
 SHOOT_DELAY = 100
 PLAYER_XSPEED = 10
+PLAYER_YSPEED = 10
 
 # Pygameの初期化とウィンドウの作成
 pygame.init()
@@ -31,20 +32,31 @@ class Player(pygame.sprite.Sprite):
         self.rect.centerx = WIDTH / 2
         self.rect.bottom = HEIGHT - 10
         self.speedx = 0
+        self.speedy = 0
         self.last_shot_time = 0  # 最後の弾の発射時刻
 
     def update(self):
         self.speedx = 0
+        self.speedy = 0
         keystate = pygame.key.get_pressed()
         if keystate[pygame.K_LEFT]:
             self.speedx = -PLAYER_XSPEED
         if keystate[pygame.K_RIGHT]:
             self.speedx = PLAYER_XSPEED
         self.rect.x += self.speedx
+        if keystate[pygame.K_UP]:
+            self.speedy = -PLAYER_YSPEED
+        if keystate[pygame.K_DOWN]:
+            self.speedy = PLAYER_YSPEED
+        self.rect.y += self.speedy
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
         if self.rect.left < 0:
             self.rect.left = 0
+        if self.rect.bottom > HEIGHT:
+            self.rect.bottom = HEIGHT
+        if self.rect.top < 0:
+            self.rect.top = 0
 
         # スペースキーが押されている間は弾を発射
         if keystate[pygame.K_SPACE]:
